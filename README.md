@@ -196,15 +196,15 @@ The prototype uses **precomputed outputs from the analysis** to demonstrate the 
 
 ### Screenshots
 
-![Smart Replenishment Home](06_Assets/screenshots/01_Home_Smart_Replenishment.png)
+![Smart Replenishment Home](06_Assets/Screenshots/01_Home_Smart_Replenishment.png)
 
-![Your Usuals](06_Assets/screenshots/02_Your_Usuals.png)
+![Your Usuals](06_Assets/Screenshots/02_Your_Usuals.png)
 
-![Why This Recommendation](06_Assets/screenshots/03_Why_Recommendation.png)
+![Why This Recommendation](06_Assets/Screenshots/03_Why_Recommendation.png)
 
-![Review Order](06_Assets/screenshots/04_Review_Order.png)
+![Review Order](06_Assets/Screenshots/04_Review_Order.png)
 
-![Order Confirmation](06_Assets/screenshots/05_Order_Confirmation.png)
+![Order Confirmation](06_Assets/Screenshots/05_Order_Confirmation.png)
 
 ---
 
