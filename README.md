@@ -196,15 +196,37 @@ The prototype uses **precomputed outputs from the analysis** to demonstrate the 
 
 ### Screenshots
 
-![Smart Replenishment Home](06_Assets/Screenshots/01_Home_Smart_Replenishment.png)
+### Screenshots
 
-![Your Usuals](06_Assets/Screenshots/02_Your_Usuals.png)
-
-![Why This Recommendation](06_Assets/Screenshots/03_Why_Recommendation.png)
-
-![Review Order](06_Assets/Screenshots/04_Review_Order.png)
-
-![Order Confirmation](06_Assets/Screenshots/05_Order_Confirmation.png)
+<table>
+  <tr>
+    <td align="center">
+      <img src="06_Assets/Screenshots/01_Home_Smart_Replenishment.png" width="180">
+      <br>
+      <sub><b>Home</b></sub>
+    </td>
+    <td align="center">
+      <img src="06_Assets/Screenshots/02_Your_Usuals.png" width="180">
+      <br>
+      <sub><b>Your Usuals</b></sub>
+    </td>
+    <td align="center">
+      <img src="06_Assets/Screenshots/03_Why_Recommendation.png" width="180">
+      <br>
+      <sub><b>Why This Recommendation</b></sub>
+    </td>
+    <td align="center">
+      <img src="06_Assets/Screenshots/04_Review_Order.png" width="180">
+      <br>
+      <sub><b>Review & Reorder</b></sub>
+    </td>
+    <td align="center">
+      <img src="06_Assets/Screenshots/05_Order_Confirmation.png" width="180">
+      <br>
+      <sub><b>Confirmation</b></sub>
+    </td>
+  </tr>
+</table>
 
 ---
 
