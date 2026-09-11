@@ -2,7 +2,7 @@
 
 ### A product analytics case study on improving repeat purchase retention through smarter replenishment.
 
-[📄 View Consulting Report](04_Consulting_Report/Zepto_Smart_Replenishment_Report.pdf) · [🧠 Product Logic](05_Product/Smart_Replenishment_Product_Logic.pdf) · [💻 Prototype]([💻 Prototype](https://gurjotxsingh.github.io/zepto-smart-replenishment/05_Product/Prototype/index.html))
+[📄 View Consulting Report](04_Consulting_Report/Zepto_Smart_Replenishment_Report.pdf)  ·  [🧠 Product Logic](05_Product/Smart_Replenishment_Product_Logic.pdf)  ·  [💻 Prototype](https://gurjotxsingh.github.io/zepto-smart-replenishment/05_Product/Prototype/index.html))
 
 ---
 
