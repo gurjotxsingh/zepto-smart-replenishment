@@ -1,0 +1,27 @@
+-- Do users experience significant drop-off between searching for something and adding it to cart?
+-- SELECT
+--     searched,
+--     add_to_cart,
+--     COUNT(*) AS sessions
+-- FROM sessions
+-- GROUP BY searched, add_to_cart
+-- ORDER BY searched, add_to_cart;
+
+-- Does this search-to-cart friction actually relate to retention?
+
+-- SELECT
+--     u.churned,
+--     COUNT(DISTINCT s.user_id) AS users,
+--     COUNT(*) AS search_sessions,
+--     SUM(
+--         CASE
+--             WHEN s.searched = 'Yes'
+--              AND s.add_to_cart = 'No'
+--             THEN 1
+--             ELSE 0
+--         END
+--     ) AS search_without_cart
+-- FROM users u
+-- JOIN sessions s
+--     ON u.user_id = s.user_id
+-- GROUP BY u.churned;

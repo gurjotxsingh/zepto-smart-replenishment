@@ -1,0 +1,23 @@
+-- -- overall funnel baseline.
+-- -- SELECT
+-- --     COUNT(*) AS total_sessions,
+-- --     SUM(CASE WHEN app_open = 'Yes' THEN 1 ELSE 0 END) AS app_opens,
+-- --     SUM(CASE WHEN searched = 'Yes' THEN 1 ELSE 0 END) AS searches,
+-- --     SUM(CASE WHEN add_to_cart = 'Yes' THEN 1 ELSE 0 END) AS add_to_carts,
+-- --     SUM(CASE WHEN checkout = 'Yes' THEN 1 ELSE 0 END) AS checkouts,
+-- --     SUM(CASE WHEN order_completed = 'Yes' THEN 1 ELSE 0 END) AS completed_orders
+-- -- FROM sessions;
+
+-- -- Do churned users behave differently inside the app than retained users?
+-- SELECT
+--     u.churned,
+--     COUNT(*) AS sessions,
+--     SUM(CASE WHEN s.searched = 'Yes' THEN 1 ELSE 0 END) AS searches,
+--     SUM(CASE WHEN s.add_to_cart = 'Yes' THEN 1 ELSE 0 END) AS add_to_carts,
+--     SUM(CASE WHEN s.checkout = 'Yes' THEN 1 ELSE 0 END) AS checkouts,
+--     SUM(CASE WHEN s.order_completed = 'Yes' THEN 1 ELSE 0 END) AS completed_orders
+-- FROM users u
+-- JOIN sessions s
+--     ON u.user_id = s.user_id
+-- GROUP BY u.churned
+-- ORDER BY u.churned;

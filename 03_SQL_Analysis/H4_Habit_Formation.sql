@@ -1,0 +1,146 @@
+-- -- Q1. Which product categories show the strongest repeat-purchase behaviour?
+-- -- SELECT
+-- --     category,
+-- --     COUNT(*) AS total_orders,
+-- --     COUNT(DISTINCT user_id) AS unique_users
+-- -- FROM orders
+-- -- GROUP BY category
+-- -- ORDER BY total_orders DESC;
+
+-- -- Q2. Are users repeatedly buying the same category?
+
+-- -- SELECT
+-- --     category,
+-- --     COUNT(*) AS repeat_category_users
+-- -- FROM (
+-- --     SELECT
+-- --         user_id,
+-- --         category,
+-- --         COUNT(order_id) AS category_orders
+-- --     FROM orders
+-- --     GROUP BY user_id, category
+-- --     HAVING COUNT(order_id) >= 2
+-- -- ) t
+-- -- GROUP BY category
+-- -- ORDER BY repeat_category_users DESC;
+
+-- -- Q3. Do users who repeatedly purchase categories have better retention than users who don’t?
+
+
+-- -- SELECT
+-- --     total_orders,
+-- --     COUNT(*) AS users
+-- -- FROM (
+-- --     SELECT
+-- --         user_id,
+-- --         COUNT(order_id) AS total_orders
+-- --     FROM orders
+-- --     GROUP BY user_id
+-- -- ) t
+-- -- GROUP BY total_orders
+-- -- ORDER BY total_orders;
+
+-- -- Q. whether they have at least one category they purchased 2+ times.
+-- -- first run this
+-- -- SELECT
+-- --     user_id,
+-- --     category,
+-- --     COUNT(order_id) AS category_orders
+-- -- FROM orders
+-- -- GROUP BY user_id, category
+-- -- ORDER BY user_id, category;
+
+-- -- then
+
+-- -- SELECT
+-- --     category_behavior,
+-- --     churned,
+-- --     COUNT(*) AS users
+-- -- FROM (
+-- --     SELECT
+-- --         o.user_id,
+-- --         u.churned,
+-- --         CASE
+-- --             WHEN MAX(category_orders) >= 2
+-- --                 THEN 'Repeat Category Buyer'
+-- --             ELSE 'No Repeat Category'
+-- --         END AS category_behavior
+-- --     FROM (
+-- --         SELECT
+-- --             user_id,
+-- --             category,
+-- --             COUNT(order_id) AS category_orders
+-- --         FROM orders
+-- --         GROUP BY user_id, category
+-- --     ) o
+-- --     JOIN users u
+-- --         ON o.user_id = u.user_id
+-- --     GROUP BY o.user_id, u.churned
+-- -- ) user_level
+-- -- GROUP BY category_behavior, churned
+-- -- ORDER BY category_behavior, churned;
+
+
+-- -- show us the distribution
+-- -- SELECT
+-- --     repeat_category_orders,
+-- --     COUNT(*) AS users
+-- -- FROM (
+-- --     SELECT
+-- --         user_id,
+-- --         SUM(
+-- --             CASE
+-- --                 WHEN category_orders >= 2
+-- --                 THEN category_orders
+-- --                 ELSE 0
+-- --             END
+-- --         ) AS repeat_category_orders
+-- --     FROM (
+-- --         SELECT
+-- --             user_id,
+-- --             category,
+-- --             COUNT(order_id) AS category_orders
+-- --         FROM orders
+-- --         GROUP BY user_id, category
+-- --     ) category_level
+-- --     GROUP BY user_id
+-- -- ) user_level
+-- -- GROUP BY repeat_category_orders
+-- -- ORDER BY repeat_category_orders;
+
+
+
+-- -- Q4. Do users with stronger recurring-purchase behaviour have better retention?
+-- SELECT
+--     CASE
+--         WHEN repeat_category_orders >= 5
+--             THEN 'High Recurring Behaviour'
+--         ELSE 'Low Recurring Behaviour'
+--     END AS recurring_segment,
+--     churned,
+--     COUNT(*) AS users
+-- FROM (
+--     SELECT
+--         o.user_id,
+--         u.churned,
+--         SUM(
+--             CASE
+--                 WHEN o.category_orders >= 2
+--                 THEN o.category_orders
+--                 ELSE 0
+--             END
+--         ) AS repeat_category_orders
+--     FROM (
+--         SELECT
+--             user_id,
+--             category,
+--             COUNT(order_id) AS category_orders
+--         FROM orders
+--         GROUP BY user_id, category
+--     ) o
+--     JOIN users u
+--         ON o.user_id = u.user_id
+--     GROUP BY o.user_id, u.churned
+-- ) user_level
+-- GROUP BY recurring_segment, churned
+-- ORDER BY recurring_segment, churned;

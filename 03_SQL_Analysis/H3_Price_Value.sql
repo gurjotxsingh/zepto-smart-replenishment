@@ -1,0 +1,83 @@
+-- -- -- -- Are coupon users more likely to churn than non-coupon users?
+-- -- -- SELECT
+-- -- --     o.coupon_used,
+-- -- --     u.churned,
+-- -- --     COUNT(DISTINCT o.user_id) AS users
+-- -- -- FROM orders o
+-- -- -- JOIN users u
+-- -- --     ON o.user_id = u.user_id
+-- -- -- GROUP BY o.coupon_used, u.churned
+-- -- -- ORDER BY o.coupon_used, u.churned;
+
+-- -- -- Are users who rely on coupons more likely to churn?
+-- -- SELECT
+-- --     user_id,
+-- --     COUNT(order_id) AS total_orders,
+-- --     SUM(
+-- --         CASE
+-- --             WHEN coupon_used = 'Yes' THEN 1
+-- --             ELSE 0
+-- --         END
+-- --     ) AS coupon_orders
+-- -- FROM orders
+-- -- GROUP BY user_id
+-- -- ORDER BY coupon_orders DESC;
+
+-- -- Are users who depend heavily on coupons more likely to churn?
+-- -- SELECT
+-- --     CASE
+-- --         WHEN coupon_orders = 0 THEN 'No Coupon'
+-- --         WHEN coupon_orders * 1.0 / total_orders < 0.50 THEN 'Low Dependency'
+-- --         WHEN coupon_orders * 1.0 / total_orders < 0.75 THEN 'High Dependency'
+-- --         ELSE 'Very High Dependency'
+-- --     END AS coupon_segment,
+-- --     churned,
+-- --     COUNT(*) AS users
+-- -- FROM (
+-- --     SELECT
+-- --         o.user_id,
+-- --         COUNT(o.order_id) AS total_orders,
+-- --         SUM(
+-- --             CASE
+-- --                 WHEN o.coupon_used = 'Yes' THEN 1
+-- --                 ELSE 0
+-- --             END
+-- --         ) AS coupon_orders,
+-- --         u.churned
+-- --     FROM orders o
+-- --     JOIN users u
+-- --         ON o.user_id = u.user_id
+-- --     GROUP BY o.user_id, u.churned
+-- -- ) user_level
+-- -- GROUP BY coupon_segment, churned
+-- -- ORDER BY coupon_segment, churned;
+
+-- -- our evidence says Coupon-heavy users do not appear more likely to churn than non-coupon users. 
+-- -- If anything, the highest-dependency group has a lower observed churn rate, but this is an association and 
+-- -- should not be interpreted as coupons causing better retention.
+
+-- -- Does coupon dependency correspond to higher purchase frequency?
+
+-- SELECT
+--     CASE
+--         WHEN coupon_orders = 0 THEN 'No Coupon'
+--         WHEN coupon_orders * 1.0 / total_orders < 0.50 THEN 'Low Dependency'
+--         WHEN coupon_orders * 1.0 / total_orders < 0.75 THEN 'High Dependency'
+--         ELSE 'Very High Dependency'
+--     END AS coupon_segment,
+--     ROUND(AVG(total_orders), 2) AS avg_orders_per_user
+-- FROM (
+--     SELECT
+--         o.user_id,
+--         COUNT(o.order_id) AS total_orders,
+--         SUM(
+--             CASE
+--                 WHEN o.coupon_used = 'Yes' THEN 1
+--                 ELSE 0
+--             END
+--         ) AS coupon_orders
+--     FROM orders o
+--     GROUP BY o.user_id
+-- ) user_level
+-- GROUP BY coupon_segment
+-- ORDER BY avg_orders_per_user;

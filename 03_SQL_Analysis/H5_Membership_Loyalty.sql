@@ -1,0 +1,41 @@
+-- -- -- Q1: Does Premium membership correlate with lower churn?
+-- -- SELECT
+-- --     membership,
+-- --     churned,
+-- --     COUNT(*) AS users
+-- -- FROM users
+-- -- GROUP BY membership, churned
+-- -- ORDER BY membership, churned;
+
+
+-- --How many orders does the average ordering user generate in each membership group?
+-- -- SELECT
+-- --     u.membership,
+-- --     COUNT(o.order_id) AS total_orders,
+-- --     COUNT(DISTINCT o.user_id) AS ordering_users,
+-- --     ROUND(
+-- --         COUNT(o.order_id)::numeric / COUNT(DISTINCT o.user_id),
+-- --         2
+-- --     ) AS avg_orders_per_user
+-- -- FROM users u
+-- -- JOIN orders o
+-- --     ON u.user_id = o.user_id
+-- -- GROUP BY u.membership
+-- -- ORDER BY u.membership;
+
+-- -- Q. Premium users order at the same frequency, but do they generate different order value/revenue?
+
+-- SELECT
+--     u.membership,
+--     COUNT(o.order_id) AS total_orders,
+--     ROUND(AVG(o.order_value), 2) AS avg_order_value,
+--     ROUND(SUM(o.order_value), 2) AS total_revenue,
+--     ROUND(
+--         SUM(o.order_value)::numeric / COUNT(DISTINCT o.user_id),
+--         2
+--     ) AS revenue_per_user
+-- FROM users u
+-- JOIN orders o
+--     ON u.user_id = o.user_id
+-- GROUP BY u.membership
+-- ORDER BY u.membership;

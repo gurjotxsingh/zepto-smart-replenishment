@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Usuals — Smart Replenishment</title>
+<meta name="description" content="A quick-commerce app with Smart Replenishment built in. Not affiliated with Zepto or any commerce platform." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --purple-900:#3d0a5c;
+  --accent:#7a1fa6;
+  --magenta:#c81e6e;
+  --accent-grad: linear-gradient(120deg, #6f21a8, #c81e6e);
+  --mint:#0f9d6f;
+  --amber:#e08900;
+  --bg:#f4f2f7;
+  --surface:#ffffff;
+  --surface-2:#faf8fc;
+  --line:#e7e2ee;
+  --line-strong:#d8d0e6;
+  --text-900:#181022;
+  --text-700:#3a2f47;
+  --text-500:#746a82;
+  --text-400:#9d94a9;
+  --radius-s:8px;
+  --radius-m:14px;
+  --radius-l:20px;
+  --font:'Inter', sans-serif;
+  --font-mono:'IBM Plex Mono', monospace;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{background:var(--bg);color:var(--text-900);font-family:var(--font);-webkit-font-smoothing:antialiased;}
+button{font-family:inherit;cursor:pointer;}
+::selection{background:#efd6ec;}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+.app-shell{max-width:460px;margin:0 auto;min-height:100vh;background:var(--bg);position:relative;display:flex;flex-direction:column;}
+@media (min-width:520px){body{padding:20px 0;}.app-shell{min-height:calc(100vh - 40px);border-radius:24px;overflow:hidden;box-shadow:0 20px 60px rgba(61,10,92,0.18);}}
+
+.header{background:var(--accent-grad);padding:14px 16px 16px;color:#fff;position:sticky;top:0;z-index:30;}
+.loc-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.loc-left{display:flex;flex-direction:column;gap:1px;}
+.loc-label{display:flex;align-items:center;gap:5px;font-weight:800;font-size:15px;}
+.loc-label svg{width:15px;height:15px;}
+.loc-sub{font-size:11.5px;color:rgba(255,255,255,0.85);font-weight:500;}
+.loc-sub b{color:#fff;}
+.avatar{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.18);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;border:1.5px solid rgba(255,255,255,0.5);}
+.search-bar{background:#fff;border-radius:12px;padding:11px 14px;display:flex;align-items:center;gap:10px;color:var(--text-500);font-size:13.5px;font-weight:500;}
+.search-bar svg{width:17px;height:17px;flex:none;color:var(--text-400);}
+
+.header-min{background:var(--accent-grad);color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:30;}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,0.16);border:none;display:flex;align-items:center;justify-content:center;color:#fff;flex:none;}
+.header-min h1{font-size:16.5px;font-weight:800;margin:0;flex:1;}
+.cart-badge{position:relative;}
+.cart-count{position:absolute;top:-5px;right:-5px;background:var(--amber);color:#fff;font-size:9px;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--accent);}
+
+.screen{flex:1;padding-bottom:90px;}
+
+.cat-scroll{display:flex;gap:14px;overflow-x:auto;padding:16px 16px 4px;scrollbar-width:none;}
+.cat-scroll::-webkit-scrollbar{display:none;}
+.cat-item{display:flex;flex-direction:column;align-items:center;gap:6px;flex:none;width:60px;}
+.cat-circle{width:56px;height:56px;border-radius:16px;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:26px;}
+.cat-item span{font-size:10.5px;font-weight:600;text-align:center;color:var(--text-700);line-height:1.2;}
+
+.sect{padding:20px 16px 0;}
+.sect-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.sect-title{font-size:16.5px;font-weight:800;letter-spacing:-0.01em;}
+.sect-link{font-size:12px;font-weight:700;color:var(--accent);background:none;border:none;}
+
+.usuals-module{margin:18px 16px 4px;border-radius:var(--radius-l);background:linear-gradient(135deg,#2b0640,#7a1fa6 55%,#c81e6e);color:#fff;padding:18px 18px 16px;position:relative;overflow:hidden;}
+.usuals-module::after{content:'';position:absolute;right:-30px;top:-30px;width:140px;height:140px;background:radial-gradient(circle, rgba(255,255,255,0.14), transparent 70%);}
+.usuals-eyebrow{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.18);padding:4px 10px;border-radius:20px;font-size:10.5px;font-weight:700;letter-spacing:.02em;margin-bottom:10px;}
+.usuals-eyebrow .dot{width:6px;height:6px;border-radius:50%;background:#ffd76a;}
+.usuals-module h2{font-size:19px;font-weight:800;margin:0 0 4px;letter-spacing:-0.01em;line-height:1.25;}
+.usuals-module p{font-size:12.5px;color:rgba(255,255,255,0.82);margin:0 0 14px;}
+.usuals-cta-row{display:flex;align-items:center;justify-content:space-between;}
+.usuals-count{font-size:12px;font-weight:600;color:rgba(255,255,255,0.9);}
+.usuals-btn{background:#fff;color:var(--purple-900);border:none;border-radius:10px;padding:10px 18px;font-weight:800;font-size:13px;display:flex;align-items:center;gap:6px;}
+
+.pcard-scroll{display:flex;gap:12px;overflow-x:auto;padding:2px 16px 6px;scrollbar-width:none;}
+.pcard-scroll::-webkit-scrollbar{display:none;}
+.pcard{flex:none;width:148px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);padding:10px;position:relative;}
+.pcard-img{width:100%;height:78px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:34px;margin-bottom:8px;}
+.pcard-repl-tag{position:absolute;top:8px;left:8px;background:var(--mint);color:#fff;font-size:8.5px;font-weight:800;padding:3px 6px;border-radius:5px;letter-spacing:.02em;}
+.pcard-name{font-size:12.5px;font-weight:700;line-height:1.25;margin:0 0 2px;min-height:31px;}
+.pcard-qty{font-size:10.5px;color:var(--text-400);margin:0 0 6px;}
+.pcard-price-row{display:flex;align-items:center;justify-content:space-between;}
+.pcard-price{font-size:14px;font-weight:800;}
+.pcard-mrp{font-size:10px;color:var(--text-400);text-decoration:line-through;margin-left:4px;font-weight:500;}
+.add-btn{background:var(--surface);border:1.5px solid var(--accent);color:var(--accent);border-radius:8px;padding:5px 12px;font-weight:800;font-size:11.5px;}
+.add-btn.added{background:var(--accent);color:#fff;}
+.pcard-repl-note{font-size:9.5px;color:var(--text-500);margin-top:6px;border-top:1px dashed var(--line);padding-top:6px;display:flex;justify-content:space-between;align-items:center;}
+.why-mini{background:none;border:none;color:var(--accent);font-weight:700;font-size:9.5px;padding:0;}
+
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:14px 16px 6px;}
+.pgrid .pcard{width:auto;}
+
+.not-ready-strip{margin:6px 16px 0;padding:12px 14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-m);display:flex;align-items:center;gap:10px;}
+.not-ready-strip .ic{width:34px;height:34px;border-radius:10px;background:#f2f0f6;display:flex;align-items:center;justify-content:center;font-size:16px;flex:none;}
+.not-ready-strip .txt{flex:1;}
+.not-ready-strip .txt b{display:block;font-size:12.5px;}
+.not-ready-strip .txt span{font-size:11px;color:var(--text-500);}
+.not-ready-strip button{background:none;border:none;color:var(--accent);font-weight:700;font-size:11.5px;}
+
+.offer-strip{margin:18px 16px 0;background:linear-gradient(120deg,#fff3d6,#ffe6b8);border-radius:var(--radius-m);padding:12px 14px;font-size:12px;font-weight:600;color:#7a4b00;display:flex;align-items:center;gap:8px;}
+
+.sheet-overlay{position:fixed;inset:0;background:rgba(20,8,28,0.5);z-index:80;display:flex;align-items:flex-end;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s ease;}
+.sheet-overlay.open{opacity:1;pointer-events:auto;}
+.sheet{background:var(--surface);width:100%;max-width:460px;border-radius:22px 22px 0 0;padding:10px 20px 26px;transform:translateY(100%);transition:transform .28s cubic-bezier(.32,.72,0,1);max-height:82vh;overflow-y:auto;}
+.sheet-overlay.open .sheet{transform:translateY(0);}
+.sheet-handle{width:36px;height:4px;background:var(--line-strong);border-radius:3px;margin:6px auto 14px;}
+.sheet h3{font-size:17px;font-weight:800;margin:0 0 2px;}
+.sheet .lede{font-size:12.5px;color:var(--text-500);margin:0 0 16px;}
+.why-stat{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+.why-stat:last-of-type{border-bottom:none;}
+.why-stat .k{color:var(--text-500);}
+.why-stat .v{font-weight:700;font-family:var(--font-mono);font-size:12.5px;}
+.why-verdict{background:var(--surface-2);border-radius:var(--radius-m);padding:13px 14px;margin-top:12px;font-size:12.5px;color:var(--text-700);line-height:1.55;}
+.why-verdict b{color:var(--text-900);}
+.tally-mini{display:flex;align-items:flex-end;gap:3px;height:24px;margin:10px 0 4px;}
+.tally-mark{width:5px;background:var(--accent);border-radius:2px;opacity:.85;}
+.tally-mark.long{background:var(--magenta);}
+.trace-note{margin-top:14px;font-size:10.5px;color:var(--text-400);line-height:1.6;border-top:1px solid var(--line);padding-top:12px;}
+.sheet-close{width:100%;background:var(--text-900);color:#fff;border:none;border-radius:12px;padding:13px;font-weight:700;font-size:14px;margin-top:16px;}
+
+.basket-line{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:1px solid var(--line);background:var(--surface);}
+.basket-img{width:44px;height:44px;border-radius:10px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:20px;flex:none;}
+.basket-info{flex:1;min-width:0;}
+.basket-info .name{font-size:13.5px;font-weight:700;margin:0;}
+.basket-info .meta{font-size:10.5px;color:var(--text-400);}
+.qty-pill{display:flex;align-items:center;gap:9px;background:var(--accent);border-radius:8px;padding:5px 8px;}
+.qty-pill button{background:none;border:none;color:#fff;font-weight:800;font-size:14px;line-height:1;width:14px;}
+.qty-pill span{color:#fff;font-weight:700;font-size:12.5px;min-width:12px;text-align:center;font-family:var(--font-mono);}
+.line-price{font-weight:800;font-size:13.5px;min-width:50px;text-align:right;font-family:var(--font-mono);}
+
+.bill-block{background:var(--surface);margin-top:10px;padding:14px 16px;border-top:8px solid var(--bg);}
+.bill-title{font-size:12px;font-weight:800;color:var(--text-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
+.bill-row{display:flex;justify-content:space-between;font-size:13px;color:var(--text-700);padding:5px 0;}
+.bill-row .v{font-family:var(--font-mono);font-weight:600;}
+.bill-row.total{font-weight:800;font-size:14.5px;color:var(--text-900);border-top:1px dashed var(--line);margin-top:6px;padding-top:10px;}
+.delivery-strip{display:flex;align-items:center;gap:8px;background:var(--surface);margin-top:10px;padding:12px 16px;border-top:8px solid var(--bg);font-size:12.5px;color:var(--text-700);}
+.delivery-strip b{color:var(--mint);}
+
+.add-more-row{background:var(--surface);margin-top:10px;padding:14px 16px;border-top:8px solid var(--bg);}
+.add-more-row .lbl{font-size:12px;font-weight:800;color:var(--text-500);text-transform:uppercase;letter-spacing:.04em;margin-bottom:10px;}
+.chip-row{display:flex;gap:8px;flex-wrap:wrap;}
+.chip{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:20px;padding:7px 12px;font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:6px;}
+
+.sticky-bar{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:12px 16px calc(12px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:12px;z-index:20;}
+.sticky-bar .amt{flex:none;}
+.sticky-bar .amt .n{font-size:16px;font-weight:800;}
+.sticky-bar .amt .s{font-size:10px;color:var(--text-500);display:block;}
+.primary-btn{flex:1;background:var(--mint);color:#fff;border:none;border-radius:12px;padding:14px;font-weight:800;font-size:14.5px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.primary-btn.checkout{background:var(--accent-grad);}
+
+.bottomnav{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 6px calc(9px + env(safe-area-inset-bottom));z-index:40;}
+.nav-item{background:none;border:none;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--text-400);font-size:10px;font-weight:700;padding:3px 10px;position:relative;}
+.nav-item.active{color:var(--accent);}
+.nav-item svg{width:21px;height:21px;}
+.nav-badge{position:absolute;top:-2px;right:2px;background:var(--amber);color:#fff;font-size:8.5px;font-weight:800;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:1.5px solid var(--surface);}
+
+.confirm-wrap{padding:50px 24px 0;text-align:center;}
+.confirm-icon{width:72px;height:72px;border-radius:50%;background:var(--mint);margin:0 auto 18px;display:flex;align-items:center;justify-content:center;color:#fff;}
+.confirm-title{font-size:22px;font-weight:800;margin:0 0 4px;}
+.confirm-sub{font-size:13.5px;color:var(--text-500);margin:0 0 22px;}
+.eta-pill{display:inline-flex;align-items:center;gap:6px;background:#e6f7ef;color:var(--mint);padding:8px 16px;border-radius:20px;font-weight:800;font-size:13px;margin-bottom:22px;}
+.confirm-card{background:var(--surface);border-radius:var(--radius-m);padding:16px;text-align:left;border:1px solid var(--line);margin-bottom:16px;}
+.feedback-note{font-size:11.5px;color:var(--text-400);line-height:1.6;max-width:300px;margin:0 auto;}
+
+.section-title-page{font-size:19px;font-weight:800;padding:16px 16px 2px;}
+.section-sub-page{font-size:12.5px;color:var(--text-500);padding:0 16px 4px;}
+
+.empty-cart{padding:60px 24px;text-align:center;color:var(--text-500);}
+.empty-cart .icn{font-size:44px;margin-bottom:10px;}
+
+.method-note{font-size:11px;color:var(--text-400);line-height:1.6;margin:14px 16px 0;padding:12px 14px;background:var(--surface);border-radius:var(--radius-m);border:1px solid var(--line);}
+.method-note b{color:var(--text-700);}
+
+.fade-in{animation:fadeIn .22s ease both;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(16px);background:var(--text-900);color:#fff;padding:10px 18px;border-radius:30px;font-size:12.5px;font-weight:600;opacity:0;pointer-events:none;transition:all .22s ease;z-index:90;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="app-shell" id="app"></div>
+<div class="toast" id="toast"></div>
+<div class="sheet-overlay" id="sheetOverlay"><div class="sheet" id="sheetBody"></div></div>
+
+<script>
+const REAL_ANALYTICAL_DATA = {
+  demo_user: "U00992",
+  eligible: [
+    { category:"Vegetables", repeat_count:4,
+      observed_intervals_days:[128,94,52], typical_interval_days:91.3,
+      interval_consistency:"Reasonably consistent", days_since_last_purchase:70, expected_replenishment_window_opens_days:68.5,
+      recommendation_status:"eligible",
+      reason:"Purchased 4 times with a typical interval of 91 days. It has been 70 days since the last Vegetables purchase — within the expected replenishment window (68 days)." },
+    { category:"Snacks", repeat_count:4,
+      observed_intervals_days:[116,67,43], typical_interval_days:75.3,
+      interval_consistency:"Reasonably consistent", days_since_last_purchase:85, expected_replenishment_window_opens_days:56.5,
+      recommendation_status:"eligible",
+      reason:"Purchased 4 times with a typical interval of 75 days. It has been 85 days since the last Snacks purchase — within the expected replenishment window (56 days)." },
+    { category:"Dairy", repeat_count:3,
+      observed_intervals_days:[51,42], typical_interval_days:46.5,
+      interval_consistency:"Highly consistent", days_since_last_purchase:42, expected_replenishment_window_opens_days:34.9,
+      recommendation_status:"eligible",
+      reason:"Purchased 3 times with a highly consistent typical interval of 46 days. It has been 42 days since the last Dairy purchase — within the expected replenishment window (35 days)." }
+  ],
+  rejected: [
+    { category:"Household", repeat_count:3, user_id:"U00992",
+      observed_intervals_days:[37,65], typical_interval_days:51,
+      interval_consistency:"Reasonably consistent", days_since_last_purchase:6, expected_replenishment_window_opens_days:38.2,
+      recommendation_status:"rejected_not_due_yet",
+      reason:"Pattern is predictable (typical interval 51 days), but only 6 days have passed since the last Household purchase — not yet within the expected window (38 days)." },
+    { category:"Household", repeat_count:6, user_id:"U01748",
+      observed_intervals_days:[0,18,295,24,0], typical_interval_days:67.4,
+      interval_consistency:"Irregular", days_since_last_purchase:7, expected_replenishment_window_opens_days:null,
+      recommendation_status:"rejected_not_predictable",
+      reason:"Purchased 6 times, but the gaps between purchases vary too much (typical interval 67 days, consistency spread 1.69) to predict a reliable window." }
+  ],
+  dataset_totals:{
+    total_user_category_pairs_evaluated:44280, recommended_count:1805,
+    rejected_not_enough_history:35242, rejected_not_predictable:5595, rejected_not_due_yet:1638
+  }
+};
+
+const MOCK_PRODUCTS = {
+  "Vegetables": { emoji:"🥦", name:"Mixed Vegetable Basket", qty:"1 kg", price:149, mrp:179 },
+  "Snacks":     { emoji:"🍪", name:"Multigrain Snack Pack",   qty:"200 g", price:89,  mrp:105 },
+  "Dairy":      { emoji:"🥛", name:"Toned Milk Pouch",        qty:"1 L",  price:68,  mrp:null },
+  "Household":  { emoji:"🧴", name:"Surface Cleaner",         qty:"500 ml", price:129, mrp:149 },
+  "Fruits":     { emoji:"🍎", name:"Seasonal Fruit Pack",     qty:"1 kg", price:179, mrp:199 },
+  "Personal Care": { emoji:"🧼", name:"Bathing Bar, Pack of 3", qty:"3 pcs", price:99, mrp:115 }
+};
+
+const CATEGORY_SHORTCUTS = [
+  {c:"Vegetables", label:"Fruits & Veg", emoji:"🥕"},
+  {c:"Dairy", label:"Dairy & Bread", emoji:"🍞"},
+  {c:"Snacks", label:"Snacks", emoji:"🍿"},
+  {c:"Beverages", label:"Beverages", emoji:"🥤"},
+  {c:"Household", label:"Household", emoji:"🧹"},
+  {c:"Personal Care", label:"Personal Care", emoji:"🧴"},
+];
+
+const BUY_AGAIN_MOCK = [
+  { emoji:"🍫", name:"Dark Chocolate Bar", qty:"100 g", price:99, mrp:120 },
+  { emoji:"🧃", name:"Mixed Fruit Juice", qty:"1 L", price:110, mrp:null },
+  { emoji:"🥚", name:"Farm Eggs, Pack of 6", qty:"6 pcs", price:72, mrp:80 },
+];
+const TRENDING_MOCK = [
+  { emoji:"☕", name:"Instant Coffee Jar", qty:"100 g", price:249, mrp:280 },
+  { emoji:"🍚", name:"Basmati Rice", qty:"5 kg", price:399, mrp:450 },
+  { emoji:"🧻", name:"Tissue Rolls, Pack of 4", qty:"4 pcs", price:159, mrp:null },
+];
+
+const state = { route:"home", cart:{} };
+
+function findEligible(cat){ return REAL_ANALYTICAL_DATA.eligible.find(c=>c.category===cat); }
+function findRejected(cat, uid){ return REAL_ANALYTICAL_DATA.rejected.find(c=>c.category===cat && (!uid || c.user_id===uid)); }
+function cartCount(){ return Object.values(state.cart).reduce((a,b)=>a+b,0); }
+function cartSubtotal(){ return Object.entries(state.cart).reduce((s,[cat,q])=>s+(MOCK_PRODUCTS[cat]?.price||0)*q,0); }
+
+function navigate(route){ state.route=route; window.scrollTo(0,0); render(); }
+function addToCart(cat, silent){
+  state.cart[cat] = (state.cart[cat]||0)+1;
+  render();
+  if(!silent) showToast(`Added ${MOCK_PRODUCTS[cat]?MOCK_PRODUCTS[cat].name:cat}`);
+}
+function changeQty(cat, delta){
+  state.cart[cat] = (state.cart[cat]||0)+delta;
+  if(state.cart[cat] <= 0) delete state.cart[cat];
+  render();
+}
+function showToast(msg){
+  const t=document.getElementById("toast");
+  t.textContent=msg; t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t=setTimeout(()=>t.classList.remove("show"),1600);
+}
+
+function openWhySheet(cat, status){
+  const el = document.getElementById("sheetOverlay");
+  const elig = findEligible(cat);
+  const c = elig || (status ? REAL_ANALYTICAL_DATA.rejected.find(r=>r.category===cat && r.recommendation_status===status) : findRejected(cat, REAL_ANALYTICAL_DATA.demo_user));
+  const p = MOCK_PRODUCTS[cat];
+  const isElig = !!elig;
+  const isIrregularHousehold = !isElig && c.recommendation_status==='rejected_not_predictable';
+  const displayName = isIrregularHousehold ? 'Household Essentials' : p.name;
+  const displayEmoji = isIrregularHousehold ? '🧽' : p.emoji;
+  const consistencyLabel = c.interval_consistency === 'Irregular' ? 'Still forming' : 'Consistent';
+  document.getElementById("sheetBody").innerHTML = `
+    <div class="sheet-handle"></div>
+    <h3>Why are we suggesting this?</h3>
+    <p class="lede">${displayEmoji} ${displayName}</p>
+    ${tallyViz(c.observed_intervals_days)}
+    <div class="why-stat"><span class="k">Bought</span><span class="v">${c.repeat_count} times</span></div>
+    <div class="why-stat"><span class="k">Usually every</span><span class="v">~${Math.round(c.typical_interval_days)} days</span></div>
+    <div class="why-stat"><span class="k">Last purchased</span><span class="v">${c.days_since_last_purchase} days ago</span></div>
+    <div class="why-stat"><span class="k">Pattern</span><span class="v">${consistencyLabel}</span></div>
+    <div class="why-verdict"><b>${isElig?'Ready to replenish':'Not ready yet'}</b><br>Your past purchases suggest this is ${isElig?'around the time you usually buy it.':'not quite due yet.'}</div>
+    ${isElig ? `<button class="sheet-close" style="background:var(--mint);margin-top:10px;" onclick="addToCart('${cat}');closeSheet();">Add to basket</button>` : ''}
+    <button class="sheet-close" onclick="closeSheet()">Close</button>
+  `;
+  el.classList.add("open");
+}
+function closeSheet(){ document.getElementById("sheetOverlay").classList.remove("open"); }
+
+function tallyViz(intervals){
+  if(!intervals || !intervals.length) return '<div class="tally-mini"></div>';
+  const max = Math.max(...intervals,1);
+  return '<div class="tally-mini">'+intervals.map(d=>{
+    const h = Math.max(6, Math.round((d/max)*24));
+    const long = d/max > 0.8;
+    return `<div class="tally-mark ${long?'long':''}" style="height:${h}px" title="${d} days"></div>`;
+  }).join('')+'</div>';
+}
+
+function icon(name){
+  const I = {
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-11.5A7 7 0 0 0 5 9.5C5 14.5 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.3"/></svg>',
+    search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+    back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>',
+    home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v9a1 1 0 0 0 1 1h4v-6h4v6h4a1 1 0 0 0 1-1v-9"/></svg>',
+    grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+    repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2 21 6 17 10"/><path d="M3 12v-1a4 4 0 0 1 4-4h14"/><path d="M7 22 3 18 7 14"/><path d="M21 12v1a4 4 0 0 1-4 4H3"/></svg>',
+    cart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16l-1.5 11a2 2 0 0 1-2 1.8H7.5a2 2 0 0 1-2-1.8L4 8Z"/><path d="M8 8V6a4 4 0 0 1 8 0v2"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>',
+    bolt:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 3 14h7l-1 8 10-12h-7l1-8Z"/></svg>',
+  };
+  return I[name]||'';
+}
+
+function headerMin(title){
+  return `
+    <div class="header-min">
+      <button class="icon-btn" onclick="navigate('home')">${icon('back')}</button>
+      <h1>${title}</h1>
+      <button class="icon-btn cart-badge" onclick="navigate('cart')">${icon('cart')}${cartCount()?`<span class="cart-count">${cartCount()}</span>`:''}</button>
+    </div>`;
+}
+
+function bottomNav(){
+  const items=[
+    {r:'home', label:'Home', ic:'home'},
+    {r:'categories', label:'Categories', ic:'grid'},
+    {r:'usuals', label:'Your Usuals', ic:'repeat'},
+    {r:'cart', label:'Cart', ic:'cart', badge:cartCount()},
+  ];
+  return `<div class="bottomnav">${items.map(i=>`
+    <button class="nav-item ${state.route===i.r?'active':''}" onclick="navigate('${i.r}')">
+      ${icon(i.ic)}<span>${i.label}</span>
+      ${i.badge?`<span class="nav-badge">${i.badge}</span>`:''}
+    </button>`).join('')}</div>`;
+}
+
+function productCard(cat){
+  const p = MOCK_PRODUCTS[cat];
+  const elig = findEligible(cat);
+  const inCart = state.cart[cat]||0;
+  return `
+    <div class="pcard">
+      ${elig?`<span class="pcard-repl-tag">USUAL</span>`:''}
+      <div class="pcard-img">${p.emoji}</div>
+      <p class="pcard-name">${p.name}</p>
+      <p class="pcard-qty">${p.qty}</p>
+      <div class="pcard-price-row">
+        <div><span class="pcard-price">₹${p.price}</span>${p.mrp?`<span class="pcard-mrp">₹${p.mrp}</span>`:''}</div>
+        <button class="add-btn ${inCart?'added':''}" onclick="addToCart('${cat}')">${inCart?inCart:'ADD'}</button>
+      </div>
+      ${elig?`
+      <div class="pcard-repl-note">
+        <span>Bought ${elig.repeat_count}× · ~${Math.round(elig.typical_interval_days)}d</span>
+        <button class="why-mini" onclick="openWhySheet('${cat}')">Why?</button>
+      </div>`:''}
+    </div>`;
+}
+
+function mockProductCard(item){
+  return `
+    <div class="pcard">
+      <div class="pcard-img">${item.emoji}</div>
+      <p class="pcard-name">${item.name}</p>
+      <p class="pcard-qty">${item.qty}</p>
+      <div class="pcard-price-row">
+        <div><span class="pcard-price">₹${item.price}</span>${item.mrp?`<span class="pcard-mrp">₹${item.mrp}</span>`:''}</div>
+        <button class="add-btn" onclick="showToast('Added ${item.name}')">ADD</button>
+      </div>
+    </div>`;
+}
+
+function screenHome(){
+  const eligible = REAL_ANALYTICAL_DATA.eligible;
+  return `
+    <div class="header">
+      <div class="loc-row">
+        <div class="loc-left">
+          <div class="loc-label">${icon('pin')} Home <span style="font-weight:500;">· 12 min</span></div>
+          <div class="loc-sub">Delivering to <b>Pitampura, Delhi</b></div>
+        </div>
+        <div class="avatar">G</div>
+      </div>
+      <div class="search-bar">${icon('search')} Search for groceries, snacks, drinks &amp; more</div>
+    </div>
+
+    <div class="screen fade-in">
+      <div class="cat-scroll">
+        ${CATEGORY_SHORTCUTS.map(c=>`
+          <div class="cat-item" onclick="navigate('categories')">
+            <div class="cat-circle">${c.emoji}</div>
+            <span>${c.label}</span>
+          </div>`).join('')}
+      </div>
+
+      <div class="usuals-module" onclick="navigate('usuals')">
+        <span class="usuals-eyebrow"><span class="dot"></span>SMART REPLENISHMENT</span>
+        <h2>Your usuals may be ready to replenish</h2>
+        <p>Familiar purchases, ready to reorder when you need them.</p>
+        <div class="usuals-cta-row">
+          <span class="usuals-count">${eligible.length} items ready</span>
+          <button class="usuals-btn" onclick="event.stopPropagation();navigate('usuals')">Review &amp; Reorder ${icon('bolt')}</button>
+        </div>
+      </div>
+
+      <div class="sect">
+        <div class="sect-head"><span class="sect-title">Your Usuals</span><button class="sect-link" onclick="navigate('usuals')">See all</button></div>
+      </div>
+      <div class="pcard-scroll">${eligible.map(c=>productCard(c.category)).join('')}</div>
+
+      <div class="offer-strip">🎉 Flat ₹40 off on orders above ₹399</div>
+
+      <div class="sect">
+        <div class="sect-head"><span class="sect-title">Buy Again</span><button class="sect-link">See all</button></div>
+      </div>
+      <div class="pcard-scroll">${BUY_AGAIN_MOCK.map(mockProductCard).join('')}</div>
+
+      <div class="sect">
+        <div class="sect-head"><span class="sect-title">Trending Near You</span><button class="sect-link">See all</button></div>
+      </div>
+      <div class="pcard-scroll">${TRENDING_MOCK.map(mockProductCard).join('')}</div>
+    </div>
+    ${bottomNav()}
+  `;
+}
+
+function screenCategories(){
+  return `
+    ${headerMin('Categories')}
+    <div class="screen fade-in">
+      <div class="pgrid" style="padding-top:16px;">
+        ${CATEGORY_SHORTCUTS.map(c=>`
+          <div class="pcard" style="text-align:center;padding:20px 10px;">
+            <div style="font-size:32px;margin-bottom:8px;">${c.emoji}</div>
+            <p class="pcard-name" style="min-height:auto;">${c.label}</p>
+          </div>`).join('')}
+      </div>
+    </div>
+    ${bottomNav()}
+  `;
+}
+
+function screenUsuals(){
+  const eligible = REAL_ANALYTICAL_DATA.eligible;
+  const rejected = REAL_ANALYTICAL_DATA.rejected;
+  return `
+    ${headerMin('Your Usuals')}
+    <div class="screen fade-in">
+      <div class="section-title-page">Things you buy again and again</div>
+      <div class="section-sub-page">Your frequently purchased items, ready to reorder.</div>
+
+      <div class="pgrid">${eligible.map(c=>productCard(c.category)).join('')}</div>
+
+      <div class="sect" style="padding-top:22px;">
+        <div class="sect-title">Not ready yet</div>
+      </div>
+      ${rejected.map(c=>{
+        const p = MOCK_PRODUCTS[c.category];
+        const label = c.recommendation_status==='rejected_not_predictable' ? 'Pattern still forming' : 'Not due yet';
+        const isIrregular = c.recommendation_status==='rejected_not_predictable';
+        const displayName = isIrregular ? 'Household Essentials' : p.name;
+        const displayEmoji = isIrregular ? '🧽' : p.emoji;
+        return `
+        <div class="not-ready-strip">
+          <div class="ic">${displayEmoji}</div>
+          <div class="txt"><b>${displayName}</b><span>${label}</span></div>
+          <button onclick="openWhySheet('${c.category}', '${c.recommendation_status}')">View</button>
+        </div>`;
+      }).join('')}
+
+      <div style="padding:16px 16px 4px;">
+        <button class="usuals-btn" style="background:var(--accent);color:#fff;width:100%;justify-content:center;padding:13px;" onclick="addAllUsuals()">Review &amp; Reorder all usuals</button>
+      </div>
+    </div>
+    ${bottomNav()}
+  `;
+}
+
+function screenCart(){
+  const entries = Object.entries(state.cart);
+  if(entries.length===0){
+    return `
+      ${headerMin('Your Basket')}
+      <div class="screen fade-in">
+        <div class="empty-cart">
+          <div class="icn">🛒</div>
+          <p>Your basket is empty.</p>
+          <button class="usuals-btn" style="background:var(--accent);color:#fff;margin-top:10px;" onclick="addAllUsuals()">Add all Usuals</button>
+        </div>
+      </div>
+      ${bottomNav()}
+    `;
+  }
+  const otherCats = Object.keys(MOCK_PRODUCTS).filter(c=>!(c in state.cart));
+  const subtotal = cartSubtotal();
+  const deliveryFee = subtotal >= 199 ? 0 : 25;
+  return `
+    ${headerMin('Your Basket')}
+    <div class="screen fade-in" style="padding-bottom:150px;">
+      <div class="section-sub-page" style="padding-top:12px;">Your usuals are ready — review before you reorder.</div>
+      <div>
+        ${entries.map(([cat,q])=>{
+          const p = MOCK_PRODUCTS[cat];
+          return `
+          <div class="basket-line">
+            <div class="basket-img">${p.emoji}</div>
+            <div class="basket-info"><p class="name">${p.name}</p><span class="meta">${cat} · ${p.qty}</span></div>
+            <div class="qty-pill">
+              <button onclick="changeQty('${cat}',-1)">−</button>
+              <span>${q}</span>
+              <button onclick="changeQty('${cat}',1)">+</button>
+            </div>
+            <div class="line-price">₹${p.price*q}</div>
+          </div>`;
+        }).join('')}
+      </div>
+
+      ${otherCats.length ? `
+      <div class="add-more-row">
+        <div class="lbl">Add something else</div>
+        <div class="chip-row">${otherCats.map(c=>`<button class="chip" onclick="addToCart('${c}',true)">${MOCK_PRODUCTS[c].emoji} ${c} <b>+</b></button>`).join('')}</div>
+      </div>` : ''}
+
+      <div class="delivery-strip">${icon('bolt')} Arriving in <b>~18 minutes</b></div>
+
+      <div class="bill-block">
+        <div class="bill-title">Bill details</div>
+        <div class="bill-row"><span>Items total</span><span class="v">₹${subtotal}</span></div>
+        <div class="bill-row"><span>Delivery fee</span><span class="v">${deliveryFee===0?'FREE':'₹'+deliveryFee}</span></div>
+        <div class="bill-row total"><span>To pay</span><span class="v">₹${subtotal+deliveryFee}</span></div>
+      </div>
+    </div>
+    <div class="sticky-bar">
+      <div class="amt"><span class="n">₹${subtotal+deliveryFee}</span><span class="s">${entries.length} item${entries.length===1?'':'s'}</span></div>
+      <button class="primary-btn checkout" onclick="navigate('review')">Review Order</button>
+    </div>
+    ${bottomNav()}
+  `;
+}
+
+function addAllUsuals(){
+  REAL_ANALYTICAL_DATA.eligible.forEach(c=>{ if(!(c.category in state.cart)) state.cart[c.category]=1; });
+  navigate('cart');
+}
+
+function screenReview(){
+  const entries = Object.entries(state.cart);
+  const subtotal = cartSubtotal();
+  const deliveryFee = subtotal >= 199 ? 0 : 25;
+  return `
+    ${headerMin('Confirm Order')}
+    <div class="screen fade-in" style="padding-bottom:150px;">
+      <div class="section-sub-page" style="padding-top:12px;">Nothing is placed until you tap Place Order below.</div>
+      <div>
+        ${entries.map(([cat,q])=>{
+          const p = MOCK_PRODUCTS[cat];
+          return `
+          <div class="basket-line">
+            <div class="basket-img">${p.emoji}</div>
+            <div class="basket-info"><p class="name">${p.name} × ${q}</p><span class="meta">${cat}</span></div>
+            <div class="line-price">₹${p.price*q}</div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div class="delivery-strip">${icon('pin')} Delivering to <b>Pitampura, Delhi</b> · ~18 min</div>
+      <div class="bill-block">
+        <div class="bill-title">Bill details</div>
+        <div class="bill-row"><span>Items total</span><span class="v">₹${subtotal}</span></div>
+        <div class="bill-row"><span>Delivery fee</span><span class="v">${deliveryFee===0?'FREE':'₹'+deliveryFee}</span></div>
+        <div class="bill-row total"><span>Total</span><span class="v">₹${subtotal+deliveryFee}</span></div>
+      </div>
+    </div>
+    <div class="sticky-bar">
+      <div class="amt"><span class="n">₹${subtotal+deliveryFee}</span><span class="s">Pay on delivery</span></div>
+      <button class="primary-btn" onclick="placeOrder()">Place Order</button>
+    </div>
+    ${bottomNav()}
+  `;
+}
+
+function placeOrder(){ navigate('confirm'); }
+
+function screenConfirm(){
+  const count = cartCount();
+  const total = cartSubtotal() + (cartSubtotal()>=199?0:25);
+  return `
+    ${headerMin('')}
+    <div class="screen fade-in">
+      <div class="confirm-wrap">
+        <div class="confirm-icon">${icon('check')}</div>
+        <div class="confirm-title">Order placed ✓</div>
+        <p class="confirm-sub">Your usuals are on the way.</p>
+        <div class="eta-pill">${icon('bolt')} Arriving in ~18 minutes</div>
+        <div class="confirm-card">
+          <div class="bill-row"><span>${count} item${count===1?'':'s'}</span><span class="v">₹${total}</span></div>
+          <div class="bill-row"><span>Delivering to</span><span class="v">Pitampura, Delhi</span></div>
+        </div>
+        <p class="feedback-note">We'll use your latest purchase to improve future replenishment suggestions.</p>
+        <button class="sect-link" style="margin-top:22px;font-size:13px;" onclick="resetHome()">Back to home</button>
+      </div>
+    </div>
+    ${bottomNav()}
+  `;
+}
+function resetHome(){ state.cart={}; navigate('home'); }
+
+function render(){
+  closeSheet();
+  const app = document.getElementById("app");
+  let html;
+  switch(state.route){
+    case 'home': html = screenHome(); break;
+    case 'categories': html = screenCategories(); break;
+    case 'usuals': html = screenUsuals(); break;
+    case 'cart': html = screenCart(); break;
+    case 'review': html = screenReview(); break;
+    case 'confirm': html = screenConfirm(); break;
+    default: html = screenHome();
+  }
+  app.innerHTML = html;
+}
+render();
+</script>
+</body>
+</html>
