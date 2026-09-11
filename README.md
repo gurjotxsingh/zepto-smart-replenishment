@@ -311,12 +311,12 @@ zepto-smart-replenishment/
     └── screenshots/
 ```
 
-# Tools
+# Skills Demonstrated
 
-**User Research** · Excel  
-**Data Analysis** · SQL  
+**Data Analysis** · Excel · SQL  
+**User Research** · 18 personally conducted interviews · Affinity Mapping  
 **Product Strategy** · Hypothesis Testing · Prioritization · Experimentation  
-**Prototype** · HTML · CSS · JavaScript  
+**Prototyping** · HTML/CSS/JavaScript  
 **Documentation** · Canva
 
 ---
