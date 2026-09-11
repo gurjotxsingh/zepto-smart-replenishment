@@ -301,8 +301,6 @@ zepto-smart-replenishment/
 
 # Disclaimer
 
-# Disclaimer
-
 This is an independent academic/product case study using synthetically generated data with AI assistance for the quantitative analysis.
 
 The **18 qualitative user interviews were personally conducted by me**.
